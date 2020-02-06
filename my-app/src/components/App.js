@@ -12,9 +12,9 @@ class App extends Component {
   };
 
   componentDidMount() {
-      const currLocal=JSON.parse(localStorage.getItem("contacts"));
+      const currentLocal=JSON.parse(localStorage.getItem("contacts"));
       this.setState({
-          contacts: currLocal || []
+          contacts: currentLocal || []
       })
   }
 
