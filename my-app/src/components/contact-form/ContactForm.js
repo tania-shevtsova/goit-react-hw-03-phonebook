@@ -2,6 +2,7 @@ import React from "react";
 import ContactItem from "../contactItem/ContactItem";
 import ContactList from "../contactList/ContactList";
 import Filter from "../filter/Filter";
+import css from './ContactForm.module.css';
 
 const ContactForm = ({
   contacts,
@@ -20,9 +21,10 @@ const ContactForm = ({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <h2>Phonebook</h2>
+      <div className={css.contactForm}>
+        <h2 className={css.header}>Phonebook</h2>
         <span>Name</span>
-        <input
+        <input 
           minLength={5}
           type="text"
           name="name"
@@ -38,20 +40,32 @@ const ContactForm = ({
           onChange={handleChangeNumber}
           valuenum={valueNum}
         ></input>
-        <button type="submit">Add contact</button>
-        <h2>Contacts</h2>
+        <button className={css.addButton} type="submit">Add contact</button>
+        </div>
+
+
+    
+       
         {contacts.length >= 2 && (
+          <>
+              <div className={css.contactForm}>
+           <h2>Find contacts by name</h2>
           <Filter
             valueFilter={valueFilter}
             onChangeInputFilter={onChangeInputFilter}
           />
+              </div>
+          </>
         )}
+        
 
         {contacts.length > 0 && (
           <ContactList arr={arr} handleDelete={handleDelete}>
             <ContactItem name={name} number={number} />
           </ContactList>
         )}
+
+    
       </form>
     </>
   );
