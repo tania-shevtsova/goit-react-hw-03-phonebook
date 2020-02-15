@@ -3,6 +3,7 @@ import ContactForm from "./contact-form/ContactForm";
 import uuid from "uuid";
 import css from "./App.module.css";
 
+
 class App extends Component {
   state = {
     contacts: [],
@@ -12,6 +13,7 @@ class App extends Component {
   };
 
   componentDidMount() {
+  
       const currentLocal=JSON.parse(localStorage.getItem("contacts"));
       this.setState({
           contacts: currentLocal || []
@@ -92,12 +94,14 @@ class App extends Component {
   };
 
   render() {
+  
     const filteredNames = this.inputFilter(
       this.state.contacts,
       this.state.filter
     );
 
     return (
+      
       <>
         <ContactForm
           contacts={this.state.contacts}
@@ -113,6 +117,7 @@ class App extends Component {
           valueFilter={this.state.filter}
           handleDelete={this.handleDelete}
         />
+         
       </>
     );
   }

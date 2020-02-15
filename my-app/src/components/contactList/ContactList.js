@@ -6,7 +6,7 @@ const ContactList = ({ arr, handleDelete }) => (
     {arr.map(el => (
       <ContactItem key={el.id} {...el} handleDelete={handleDelete} />
     ))}
-  </ul>
+    </ul>
 );
 
 export default ContactList;
