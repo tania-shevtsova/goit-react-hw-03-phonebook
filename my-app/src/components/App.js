@@ -2,27 +2,37 @@ import React, { Component } from "react";
 import ContactForm from "./contact-form/ContactForm";
 import uuid from "uuid";
 import css from "./App.module.css";
+import transitions from "../transitions.module.css";
+import cssForm from "./contact-form/ContactForm.module.css";
+import { CSSTransition } from "react-transition-group";
+import PNotify from "pnotify/dist/es/PNotify";
+import "pnotify/dist/es/PNotifyAnimate";
+import Notify from "./notify/Notify";
+import tr from "./notify/tr.module.css";
 
 class App extends Component {
   state = {
     contacts: [],
     filter: "",
     name: "",
-    number: ""
+    number: "",
+    isOpen: false,
+    onNotification: false,
+    notificationMessage: ""
   };
 
   componentDidMount() {
-      const currentLocal=JSON.parse(localStorage.getItem("contacts"));
-      this.setState({
-          contacts: currentLocal || []
-      })
+    const currentLocal = JSON.parse(localStorage.getItem("contacts"));
+    this.setState({
+      contacts: currentLocal || [],
+      isOpen: true
+    });
   }
 
   handleChange = e => {
     const name = e.target.name;
 
-    this.setState(
-        { [name]: e.target.value });
+    this.setState({ [name]: e.target.value });
   };
 
   handleChangeNumber = e => {
@@ -36,12 +46,20 @@ class App extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    if (
-      this.state.contacts.find(
-        el => el.name.toLowerCase() === this.state.name.toLowerCase()
-      )
-    ) {
-      alert(`${this.state.name} already exists in your contact list`);
+    const findSame = this.state.contacts.find(
+      el => el.name.toLowerCase() === this.state.name.toLowerCase()
+    );
+    if (findSame) {
+      this.setState({
+        onNotification: true,
+        notificationMessage: `${this.state.name} already exists in your contact list!`
+      });
+      setTimeout(() => {
+        this.setState({
+          onNotification: false
+        });
+      }, 1500);
+
       this.setState({ name: "" });
       return;
     }
@@ -62,10 +80,14 @@ class App extends Component {
       number: this.state.number
     };
     this.setState(prev => {
-        localStorage.setItem('contacts', JSON.stringify([...prev.contacts, object]))
-       return {
-      contacts: [...prev.contacts, object]
-    }});
+      localStorage.setItem(
+        "contacts",
+        JSON.stringify([...prev.contacts, object])
+      );
+      return {
+        contacts: [...prev.contacts, object]
+      };
+    });
 
     e.target.reset();
     this.setState({ name: "", number: "" });
@@ -85,13 +107,18 @@ class App extends Component {
 
   handleDelete = ({ id }) => {
     this.setState(prev => {
-        localStorage.setItem('contacts', JSON.stringify(prev.contacts.filter(el => el.id !== id)))
-        return{
-      contacts: prev.contacts.filter(el => el.id !== id)
-    }});
+      localStorage.setItem(
+        "contacts",
+        JSON.stringify(prev.contacts.filter(el => el.id !== id))
+      );
+      return {
+        contacts: prev.contacts.filter(el => el.id !== id)
+      };
+    });
   };
 
   render() {
+    const { isOpen, onNotification, notificationMessage } = this.state;
     const filteredNames = this.inputFilter(
       this.state.contacts,
       this.state.filter
@@ -99,6 +126,15 @@ class App extends Component {
 
     return (
       <>
+        <CSSTransition
+          in={isOpen}
+          timeout={500}
+          classNames={transitions}
+          unmountOnExit
+        >
+          <h2 className={cssForm.header}>Phonebook</h2>
+        </CSSTransition>
+
         <ContactForm
           contacts={this.state.contacts}
           handleSubmit={this.handleSubmit}
@@ -113,6 +149,14 @@ class App extends Component {
           valueFilter={this.state.filter}
           handleDelete={this.handleDelete}
         />
+        <CSSTransition
+          in={onNotification}
+          timeout={250}
+          classNames={tr}
+          unmountOnExit
+        >
+          <Notify notificationMessage={notificationMessage} />
+        </CSSTransition>
       </>
     );
   }
