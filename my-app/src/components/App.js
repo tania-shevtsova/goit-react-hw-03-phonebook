@@ -10,6 +10,7 @@ import "pnotify/dist/es/PNotifyAnimate";
 import Notify from "./notify/Notify";
 import tr from "./notify/tr.module.css";
 
+
 class App extends Component {
   state = {
     contacts: [],
@@ -125,6 +126,7 @@ class App extends Component {
     );
 
     return (
+      
       <>
         <CSSTransition
           in={isOpen}
